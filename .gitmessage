@@ -1,0 +1,18 @@
+<type>(<scope>): <subject>
+
+# Why is this change needed?
+Prior to this change, 
+
+# How does it address the issue?
+This change
+
+# What side effects does this change have?
+Impact:
+
+# Include links to tickets, issues or other resources
+Closes #
+
+# Types: feat, fix, docs, style, refactor, perf, test, chore
+# Scopes: chat, ui, api, state, core, deps, config
+# Subject: imperative, no period, 50 chars
+# -------------------- 50 characters ----------------------| 
