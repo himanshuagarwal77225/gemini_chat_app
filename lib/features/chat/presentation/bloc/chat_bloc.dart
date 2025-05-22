@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/entities/chat_message.dart';
 import '../../domain/repositories/chat_repository.dart';
 import '../../domain/usecases/send_message.dart';
 import 'chat_event.dart';
@@ -25,10 +26,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc({
     required this.sendMessage,
     required this.repository,
-  }) : super(ChatInitial()) {
+  }) : super(const ChatInitial([])) {
     on<SendMessageEvent>(_onSendMessage);
     on<LoadChatHistoryEvent>(_onLoadChatHistory);
-    on<ClearChatHistoryEvent>(_onClearChatHistory);
+    on<ClearHistoryEvent>(_onClearHistory);
   }
 
   /// Handles the [SendMessageEvent].
@@ -44,23 +45,25 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     SendMessageEvent event,
     Emitter<ChatState> emit,
   ) async {
-    if (state is ChatMessagesLoaded) {
-      final currentState = state as ChatMessagesLoaded;
-      emit(currentState.copyWith(isTyping: true));
+    // Create and add user message immediately
+    final userMessage = ChatMessage.user(content: event.message);
+    final currentMessages = List<ChatMessage>.from(state.messages)
+      ..add(userMessage);
+    emit(ChatMessageSent(currentMessages));
 
-      final result = await sendMessage.execute(event.message);
+    // Show loading state while waiting for AI response
+    emit(ChatLoading(currentMessages));
 
-      result.fold(
-        (failure) => emit(ChatError(message: failure.message)),
-        (message) {
-          final updatedMessages = List.of(currentState.messages)..add(message);
-          emit(ChatMessagesLoaded(
-            messages: updatedMessages,
-            isTyping: false,
-          ));
-        },
-      );
-    }
+    // Get AI response
+    final result = await sendMessage.execute(event.message);
+    result.fold(
+      (failure) => emit(ChatError(currentMessages, failure.message)),
+      (aiMessage) {
+        final updatedMessages = List<ChatMessage>.from(currentMessages)
+          ..add(aiMessage);
+        emit(ChatMessageSent(updatedMessages));
+      },
+    );
   }
 
   /// Handles the [LoadChatHistoryEvent].
@@ -75,16 +78,17 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     LoadChatHistoryEvent event,
     Emitter<ChatState> emit,
   ) async {
-    emit(ChatLoading());
+    emit(ChatLoading(state.messages));
+
     final result = await repository.getChatHistory();
 
     result.fold(
-      (failure) => emit(ChatError(message: failure.message)),
-      (messages) => emit(ChatMessagesLoaded(messages: messages)),
+      (failure) => emit(ChatError(state.messages, failure.message)),
+      (messages) => emit(ChatInitial(messages)),
     );
   }
 
-  /// Handles the [ClearChatHistoryEvent].
+  /// Handles the [ClearHistoryEvent].
   ///
   /// This method clears all chat history from storage and updates
   /// the state to show an empty chat.
@@ -92,15 +96,17 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   /// Parameters:
   ///   - event: The clear history event.
   ///   - emit: Function to emit new states.
-  Future<void> _onClearChatHistory(
-    ClearChatHistoryEvent event,
+  Future<void> _onClearHistory(
+    ClearHistoryEvent event,
     Emitter<ChatState> emit,
   ) async {
+    emit(ChatLoading(state.messages));
+
     final result = await repository.clearHistory();
 
     result.fold(
-      (failure) => emit(ChatError(message: failure.message)),
-      (_) => emit(const ChatMessagesLoaded(messages: [])),
+      (failure) => emit(ChatError(state.messages, failure.message)),
+      (_) => emit(const ChatInitial([])),
     );
   }
 }

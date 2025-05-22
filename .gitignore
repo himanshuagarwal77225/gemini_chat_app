@@ -32,9 +32,35 @@ migrate_working_dir/
 /build/
 *.g.dart
 *.freezed.dart
+*.mocks.dart
+
+# Generated files
+**/generated_plugin_registrant.*
+**/GeneratedPluginRegistrant.*
+**/generated_plugins.cmake
+**/generated/**
+
+# Windows specific
+**/windows/**/Generated.props
+**/windows/**/*.user
+**/windows/**/cmake_install.cmake
+**/windows/**/CMakeCache.txt
+**/windows/**/CMakeFiles/
+**/windows/**/runner.sln
+**/windows/**/Runner.sln
+**/windows/**/runner.vcxproj
+**/windows/**/runner.vcxproj.filters
+**/windows/**/x64/
+**/windows/flutter/ephemeral/
+
+# Linux specific
+**/linux/flutter/generated_plugin_registrant.cc
+**/linux/flutter/generated_plugin_registrant.h
+**/linux/flutter/ephemeral/
 
 # Web related
 lib/generated_plugin_registrant.dart
+web/flutter_service_worker.js
 
 # Symbolication related
 app.*.symbols

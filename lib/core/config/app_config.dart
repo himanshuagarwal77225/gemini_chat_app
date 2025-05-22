@@ -21,4 +21,12 @@ class AppConfig {
     // Replace this with your API key for testing
     return 'YOUR_API_KEY_HERE';
   }
+
+  // Replace this with your actual Gemini API key
+  // static const String geminiApiKey = 'YOUR_GEMINI_API_KEY';
+
+  // Gemini model configuration
+  static const String geminiModel = 'models/gemini-pro';
+  static const int maxOutputTokens = 2048;
+  static const double temperature = 0.7;
 }

@@ -51,3 +51,14 @@ class NetworkFailure extends Failure {
   ///   - message: A descriptive message explaining the network failure.
   const NetworkFailure({required super.message});
 }
+
+/// Represents failures related to input validation.
+///
+/// This includes invalid user input, format errors, etc.
+class ValidationFailure extends Failure {
+  /// Creates a new [ValidationFailure] instance with the specified error message.
+  ///
+  /// Parameters:
+  ///   - message: A descriptive message explaining the validation failure.
+  const ValidationFailure({required super.message});
+}

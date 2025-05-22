@@ -9,13 +9,10 @@ import '../../domain/entities/chat_message.dart';
 /// user and AI messages. It includes the message content, timestamp,
 /// and an avatar icon to distinguish between participants.
 class ChatMessageWidget extends StatelessWidget {
-  /// The chat message to display.
+  /// The message to display.
   final ChatMessage message;
 
-  /// Creates a new [ChatMessageWidget] instance.
-  ///
-  /// Parameters:
-  ///   - message: The [ChatMessage] to display.
+  /// Creates a new [ChatMessageWidget].
   const ChatMessageWidget({
     super.key,
     required this.message,
@@ -23,68 +20,88 @@ class ChatMessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isUser = message.isUser;
+    final timeString = DateFormat('HH:mm').format(message.timestamp);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         mainAxisAlignment:
-            message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+            isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // AI avatar (shown on the left for AI messages)
-          if (!message.isUser) _buildAvatar(),
-          const SizedBox(width: 8),
-          // Message bubble
-          Flexible(
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: message.isUser
-                    ? Theme.of(context).primaryColor
-                    : Colors.grey[300],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Message content
-                  Text(
-                    message.content,
-                    style: TextStyle(
-                      color: message.isUser ? Colors.white : Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  // Timestamp
-                  Text(
-                    DateFormat('HH:mm').format(message.timestamp),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: message.isUser
-                          ? Colors.white.withValues(alpha: 0.7)
-                          : Colors.black54,
-                    ),
-                  ),
-                ],
+          if (!isUser) ...[
+            const CircleAvatar(
+              radius: 16,
+              backgroundColor: Colors.green,
+              child: Icon(
+                Icons.smart_toy,
+                size: 18,
+                color: Colors.white,
               ),
             ),
+            const SizedBox(width: 8),
+          ],
+          Flexible(
+            child: Column(
+              crossAxisAlignment:
+                  isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isUser ? Colors.green : Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(20),
+                      topRight: const Radius.circular(20),
+                      bottomLeft: Radius.circular(isUser ? 20 : 0),
+                      bottomRight: Radius.circular(isUser ? 0 : 20),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 5,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    message.content,
+                    style: TextStyle(
+                      color: isUser ? Colors.white : Colors.black87,
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    timeString,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(width: 8),
-          // User avatar (shown on the right for user messages)
-          if (message.isUser) _buildAvatar(),
+          if (isUser) ...[
+            const SizedBox(width: 8),
+            CircleAvatar(
+              radius: 16,
+              backgroundColor: Colors.blue.shade100,
+              child: const Icon(
+                Icons.person,
+                size: 18,
+                color: Colors.blue,
+              ),
+            ),
+          ],
         ],
-      ),
-    );
-  }
-
-  /// Builds an avatar icon for the message sender.
-  ///
-  /// Returns a [CircleAvatar] with different colors and icons
-  /// for user and AI messages.
-  Widget _buildAvatar() {
-    return CircleAvatar(
-      backgroundColor: message.isUser ? Colors.blue : Colors.green,
-      child: Icon(
-        message.isUser ? Icons.person : Icons.android,
-        color: Colors.white,
       ),
     );
   }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
+import 'core/config/window_config.dart';
 import 'features/chat/presentation/bloc/chat_bloc.dart';
-import 'features/chat/presentation/pages/chat_screen.dart';
+import 'features/chat/presentation/bloc/chat_event.dart';
+import 'features/chat/presentation/pages/chat_page.dart';
 import 'injection_container.dart' as di;
 
 /// Entry point of the application.
@@ -12,6 +13,9 @@ import 'injection_container.dart' as di;
 void main() async {
   // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Configure window for desktop platforms
+  configureWindow();
 
   // Initialize dependency injection
   await di.init();
@@ -30,27 +34,29 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Configure app routes
-    final router = GoRouter(
-      routes: [
-        GoRoute(
-          path: '/',
-          builder: (context, state) => BlocProvider(
-            create: (_) => di.sl<ChatBloc>(),
-            child: const ChatScreen(),
-          ),
-        ),
-      ],
-    );
-
-    // Return the configured app
-    return MaterialApp.router(
+    return MaterialApp(
       title: 'Gemini Chat',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+          brightness: Brightness.light,
+        ),
         useMaterial3: true,
       ),
-      routerConfig: router,
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+          brightness: Brightness.dark,
+        ),
+        useMaterial3: true,
+      ),
+      themeMode: ThemeMode.system,
+      home: BlocProvider(
+        create: (context) =>
+            di.sl<ChatBloc>()..add(const LoadChatHistoryEvent()),
+        child: const ChatPage(),
+      ),
     );
   }
 }

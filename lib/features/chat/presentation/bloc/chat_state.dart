@@ -8,40 +8,32 @@ import '../../domain/entities/chat_message.dart';
 /// that the chat feature can be in. It extends [Equatable] to provide
 /// value equality comparisons between states.
 abstract class ChatState extends Equatable {
-  const ChatState();
+  /// The current list of chat messages.
+  final List<ChatMessage> messages;
+
+  /// Creates a new [ChatState].
+  const ChatState(this.messages);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [messages];
 }
 
 /// Represents the initial state of the chat feature.
 ///
 /// This state is used when the chat feature is first initialized
 /// and no messages have been loaded yet.
-class ChatInitial extends ChatState {}
+class ChatInitial extends ChatState {
+  /// Creates a new [ChatInitial] state.
+  const ChatInitial(super.messages);
+}
 
 /// Represents a loading state while performing chat operations.
 ///
 /// This state is used when the application is waiting for operations
 /// such as loading chat history or sending messages.
-class ChatLoading extends ChatState {}
-
-/// Represents an error state in the chat feature.
-///
-/// This state is used when an operation fails and contains
-/// an error message describing what went wrong.
-class ChatError extends ChatState {
-  /// The error message describing what went wrong.
-  final String message;
-
-  /// Creates a new [ChatError] state.
-  ///
-  /// Parameters:
-  ///   - message: A description of the error that occurred.
-  const ChatError({required this.message});
-
-  @override
-  List<Object> get props => [message];
+class ChatLoading extends ChatState {
+  /// Creates a new [ChatLoading] state.
+  const ChatLoading(super.messages);
 }
 
 /// Represents a state where chat messages are loaded and ready.
@@ -50,7 +42,11 @@ class ChatError extends ChatState {
 /// whether the AI is currently typing a response.
 class ChatMessagesLoaded extends ChatState {
   /// The list of chat messages to display.
-  final List<ChatMessage> messages;
+  final List<ChatMessage> _messages;
+
+  /// The list of chat messages to display.
+  @override
+  List<ChatMessage> get messages => _messages;
 
   /// Whether the AI is currently typing a response.
   final bool isTyping;
@@ -61,9 +57,10 @@ class ChatMessagesLoaded extends ChatState {
   ///   - messages: The list of chat messages to display.
   ///   - isTyping: Whether the AI is currently typing (defaults to false).
   const ChatMessagesLoaded({
-    required this.messages,
+    required List<ChatMessage> messages,
     this.isTyping = false,
-  });
+  })  : _messages = messages,
+        super(messages);
 
   @override
   List<Object> get props => [messages, isTyping];
@@ -85,4 +82,29 @@ class ChatMessagesLoaded extends ChatState {
       isTyping: isTyping ?? this.isTyping,
     );
   }
+}
+
+/// Represents a state where a chat message has been sent.
+class ChatMessageSent extends ChatState {
+  /// Creates a new [ChatMessageSent] state.
+  const ChatMessageSent(super.messages);
+}
+
+/// Represents an error state in the chat feature.
+///
+/// This state is used when an operation fails and contains
+/// an error message describing what went wrong.
+class ChatError extends ChatState {
+  /// The error message describing what went wrong.
+  final String error;
+
+  /// Creates a new [ChatError] state.
+  ///
+  /// Parameters:
+  ///   - messages: The list of chat messages.
+  ///   - error: A description of the error that occurred.
+  const ChatError(super.messages, this.error);
+
+  @override
+  List<Object> get props => [messages, error];
 }

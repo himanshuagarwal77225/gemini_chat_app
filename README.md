@@ -1,4 +1,4 @@
-# Gemini Chat App
+# Gemini Chat
 
 A modern Flutter chat application powered by Google's Gemini AI API. This project demonstrates the
 implementation of a chatbot using clean architecture principles and best practices.
@@ -12,13 +12,28 @@ implementation of a chatbot using clean architecture principles and best practic
 - 💾 Local chat history persistence
 - ⚡ Efficient state management with BLoC pattern
 - 🧹 Clean Architecture implementation
+- 🖥️ Cross-platform support (Windows, macOS, Linux, Web)
+
+## Demo
+
+Watch the app in action:
+
+https://github.com/himanshuagarwal77225/ai_chatbot/blob/master/demo.mp4
+
+Key highlights in the demo:
+
+- 🚀 Smooth chat interactions
+- 🎯 Real-time AI responses
+- 🎨 Clean and intuitive UI
+- 💫 Fluid animations
+- 🔄 Chat history management
 
 ## Prerequisites
 
 Before running the application, make sure you have:
 
 - Flutter SDK (latest stable version)
-- Dart SDK (latest stable version)
+- Dart SDK (>=3.2.3 <4.0.0)
 - A Google Cloud account with Gemini API access
 - Your Gemini API key
 
@@ -27,8 +42,8 @@ Before running the application, make sure you have:
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/himanshuagarwal77225/gemini_chat_app.git
-cd gemini_chat_app
+git clone https://github.com/himanshuagarwal77225/ai_chatbot.git
+cd ai_chatbot
 ```
 
 2. Install dependencies:
@@ -37,12 +52,10 @@ cd gemini_chat_app
 flutter pub get
 ```
 
-3. Set up your Gemini API key:
-    - Create a `.env` file in the project root
-    - Add your API key:
-      ```
-      GEMINI_API_KEY=your_api_key_here
-      ```
+3. Set up your Gemini API key in `lib/core/config/app_config.dart`:
+   ```dart
+   static const String geminiApiKey = 'your_api_key_here';
+   ```
 
 4. Run the app:
 
@@ -57,67 +70,78 @@ The project follows clean architecture principles with the following structure:
 ```
 lib/
 ├── core/
-│   ├── error/
-│   ├── network/
-│   └── utils/
+│   ├── config/      # App configuration
+│   ├── error/       # Error handling
+│   └── network/     # Network utilities
 ├── features/
 │   └── chat/
-│       ├── data/
-│       ├── domain/
-│       └── presentation/
+│       ├── data/           # Data layer
+│       │   ├── datasources/
+│       │   ├── models/
+│       │   └── repositories/
+│       ├── domain/         # Domain layer
+│       │   ├── entities/
+│       │   ├── repositories/
+│       │   └── usecases/
+│       └── presentation/   # Presentation layer
+│           ├── bloc/
+│           ├── pages/
+│           └── widgets/
 └── main.dart
 ```
 
-### Key Components
-
-- **Data Layer**: Handles data operations and external APIs
-- **Domain Layer**: Contains business logic and entities
-- **Presentation Layer**: Manages UI and state
-    - BLoC pattern for state management
-    - Widgets for UI components
-
 ## Dependencies
 
-- `flutter_bloc`: State management
-- `go_router`: Navigation
-- `google_generative_ai`: Gemini AI API integration
-- `equatable`: Value equality
-- `shared_preferences`: Local storage
-- `intl`: Internationalization
+Key dependencies include:
+
+- `flutter_bloc`: ^9.1.1 - State management
+- `google_generative_ai`: ^0.4.7 - Gemini AI API integration
+- `get_it`: ^8.0.3 - Dependency injection
+- `equatable`: ^2.0.7 - Value equality
+- `shared_preferences`: ^2.5.3 - Local storage
+- `internet_connection_checker`: ^3.0.1 - Network connectivity
+- `window_size` - Desktop window management
+- `intl`: ^0.20.2 - Internationalization
+
+Development dependencies:
+
+- `mockito`: ^5.4.4 - Mocking for tests
+- `build_runner`: ^2.4.8 - Code generation
+- `flutter_lints`: ^2.0.0 - Linting rules
 
 ## Architecture
 
 The app implements clean architecture with three main layers:
 
 1. **Presentation Layer**
-    - ChatScreen
-    - ChatBloc
-    - UI Widgets
+    - Chat Page
+    - Chat BLoC
+    - UI Widgets (Messages, Input, Typing Indicator)
 
 2. **Domain Layer**
-    - Entities
-    - Repositories
-    - Use Cases
+    - Chat Message Entity
+    - Chat Repository Interface
+    - Use Cases (Send Message, Get History)
 
 3. **Data Layer**
-    - Repository Implementations
-    - Data Sources
-    - Models
+    - Repository Implementation
+    - Remote Data Source (Gemini AI)
+    - Local Data Source (SharedPreferences)
 
 ## State Management
 
-The app uses the BLoC pattern for state management with the following components:
+The app uses the BLoC pattern with the following components:
 
 - **Events**
     - SendMessageEvent
     - LoadChatHistoryEvent
-    - ClearChatHistoryEvent
+  - ClearHistoryEvent
 
 - **States**
     - ChatInitial
     - ChatLoading
     - ChatError
-    - ChatMessagesLoaded
+  - ChatSuccess
 
 ## Contributing
 

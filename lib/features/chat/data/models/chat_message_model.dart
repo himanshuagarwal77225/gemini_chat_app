@@ -13,10 +13,14 @@ class ChatMessageModel extends ChatMessage {
   ///   - isUser: Whether the message was sent by the user.
   ///   - timestamp: When the message was created.
   const ChatMessageModel({
-    required super.content,
-    required super.isUser,
-    required super.timestamp,
-  });
+    required String content,
+    required bool isUser,
+    required DateTime timestamp,
+  }) : super(
+          content: content,
+          isUser: isUser,
+          timestamp: timestamp,
+        );
 
   /// Creates a [ChatMessageModel] from a JSON map.
   ///
@@ -27,9 +31,11 @@ class ChatMessageModel extends ChatMessage {
   ///   A new [ChatMessageModel] instance.
   factory ChatMessageModel.fromJson(Map<String, dynamic> json) {
     return ChatMessageModel(
-      content: json['content'] as String,
-      isUser: json['isUser'] as bool,
-      timestamp: DateTime.parse(json['timestamp'] as String),
+      content: json['content'] as String? ?? '',
+      isUser: json['isUser'] as bool? ?? false,
+      timestamp: json['timestamp'] != null
+          ? DateTime.parse(json['timestamp'] as String)
+          : DateTime.now(),
     );
   }
 
@@ -72,6 +78,14 @@ class ChatMessageModel extends ChatMessage {
       content: content,
       isUser: false,
       timestamp: DateTime.now(),
+    );
+  }
+
+  factory ChatMessageModel.fromEntity(ChatMessage entity) {
+    return ChatMessageModel(
+      content: entity.content,
+      isUser: entity.isUser,
+      timestamp: entity.timestamp,
     );
   }
 }

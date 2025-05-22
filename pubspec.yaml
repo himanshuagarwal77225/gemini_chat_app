@@ -1,5 +1,5 @@
 name: gemini_chat_app
-description: "A new Flutter project."
+description: A Flutter chat application powered by Google's Gemini AI.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -19,14 +19,14 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.5.1
+  sdk: '>=3.2.3 <4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
 # consider running `flutter pub upgrade --major-versions`. Alternatively,
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
-# versions available, run `flutter pub outdated`. AIzaSyC3Tc2Y2QiuI3i1MdQOfpU1P10ZEhuc1Ko
+# versions available, run `flutter pub outdated`.
 dependencies:
   flutter:
     sdk: flutter
@@ -46,16 +46,25 @@ dependencies:
   dartz: ^0.10.1
   shared_preferences: ^2.5.3
   intl: ^0.20.2
+  http: ^1.4.0  # Added for API calls
+  # Platform support dependencies
+  path_provider: ^2.1.5  # For managing files across platforms
+  internet_connection_checker: ^3.0.1  # For network connectivity checks
+  window_size: # For desktop window management
+    git:
+      url: https://github.com/google/flutter-desktop-embedding.git
+      path: plugins/window_size
+  url_launcher: ^6.3.1  # For opening links across platforms
+  flutter_native_splash: ^2.4.6  # For native splash screen support
+  device_info_plus: ^11.4.0 # For device-specific features
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^2.0.0
+  mockito: ^5.4.4
+  build_runner: ^2.4.8
+  intl: ^0.20.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
