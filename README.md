@@ -16,9 +16,7 @@ implementation of a chatbot using clean architecture principles and best practic
 
 ## Demo
 
-Watch the app in action:
-
-https://github.com/himanshuagarwal77225/ai_chatbot/blob/master/demo.mp4
+![Gemini Chat Demo](demo.gif)
 
 Key highlights in the demo:
 
@@ -42,7 +40,7 @@ Before running the application, make sure you have:
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/himanshuagarwal77225/ai_chatbot.git
+git clone https://github.com/himanshuagarwal77225/gemini_chat_app.git
 cd ai_chatbot
 ```
 
